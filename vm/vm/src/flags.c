@@ -17,6 +17,8 @@ int		extra_flags(t_args *args, t_vm *vm)
 	if (STR_CMP("dump") == 0)
 	{
 		args->index++;
+		if (args->index >= args->argc)
+			exit_str("Error:\nBad parameters\n");
 		vm->flags.dump = ft_atoi_long(args->argv[args->index]);
 		if (vm->flags.dump == 0 && STR_CMP("0") != 0)
 			exit_str("Error: Invalid number for dump\n");

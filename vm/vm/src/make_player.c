@@ -35,11 +35,6 @@ char		*check_player_flags(t_args *args, t_player *player, t_vm *vm)
 					is_duplicate_player_num(player->player_num, vm))
 				exit_str("Error:\nBad player number\n");
 		}
-		else if (ft_strcmp(args->argv[args->index] + 1, "a") == 0)
-		{
-			args->index++;
-			player->start_loc = ft_atoi_long(args->argv[args->index]);
-		}
 		args->index++;
 	}
 	if (args->index >= args->argc)
