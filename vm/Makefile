@@ -3,139 +3,39 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rhohls <rhohls@student.42.fr>              +#+  +:+       +#+         #
+#    By: rhohls <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/07/17 13:08:28 by rhohls            #+#    #+#              #
-#    Updated: 2018/09/18 08:54:58 by rhohls           ###   ########.fr        #
+#    Created: 2018/09/28 11:34:43 by rhohls            #+#    #+#              #
+#    Updated: 2018/09/28 11:34:47 by rhohls           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-COREWAR = corewar
-TEST ?= test.c
+NAME		= compile
+VM			= corewar
+ASM			= asm
+VM_PATH		= vm
+ASM_PATH	= asm_dir
 
-# Path
-SRC_PATH = ./src/
-OBJ_PATH = ./objs/
-INC_PATH = ./includes/
-LIB_PATH = ./libft/
-FUNC_PATH = ./src_func/
+all:	$(NAME)
 
-# Files
-SRC_FILE =	op.c	\
-			print.c	\
-			print2.c \
-			print3.c \
-			make_player.c	\
-			make_player2.c	\
-			error.c	\
-			get_int.c	\
-			init_vm.c	\
-			vm_cycle.c	\
-			cursor.c	\
-			death_cycle.c	\
-			ex_instructions.c	\
-			get_par.c	\
-			get_par2.c \
-			replace_live.c \
-			flags.c		\
-			main_print.c		\
-			jump_function.c \
-			jump_functions2.c \
-			jump_functions3.c \
-			jump_functions4.c \
-			store_int.c	\
-			visualiser.c \
-			visual_utils.c \
-			visual_init.c \
-			visual_print.c \
-			visual_print_2.c \
-			player_start.c \
-			dump.c
+$(NAME):
+	@make -C $(VM_PATH)
+	@make -C $(ASM_PATH)
+	@cp ./$(VM_PATH)/corewar ./
+	@cp ./$(ASM_PATH)/asm ./
 
-FUNC_FILE = cw_add.c	\
-			cw_aff.c	\
-			cw_and.c	\
-			cw_fork.c	\
-			cw_ld.c		\
-			cw_ldi.c	\
-			cw_lfork.c	\
-			cw_live.c	\
-			cw_lld.c	\
-			cw_lldi.c	\
-			cw_null.c	\
-			cw_or.c		\
-			cw_st.c		\
-			cw_sti.c	\
-			cw_sub.c	\
-			cw_xor.c	\
-			cw_zjmp.c	\
-			cw_bitop.c	\
-			cw_math.c	\
-			cw_load.c	\
-			cw_load_i.c	\
-			cw_forking.c	\
-			cw_bitop_func.c	\
+cleanfile:
+	@rm -f $(VM)
+	@rm -f $(ASM)
 
-# Manipulate
-OBJ_FILE = $(SRC_FILE:%.c=%.o)
-FUN_OBJ_FILE = $(FUNC_FILE:%.c=%.o)
+clean: cleanfile
+	@make -C $(VM_PATH) clean
+	@make -C $(ASM_PATH) clean
 
-SRC = 		$(addprefix $(SRC_PATH), $(FUNC_FILE)) 
-OBJ = 		$(addprefix $(OBJ_PATH), $(OBJ_FILE)) 
+fclean: cleanfile
+	@make -C $(VM_PATH) fclean 
+	@make -C $(ASM_PATH) fclean
 
-FUNC_SRC =	$(addprefix $(FUNC_PATH), $(FUN_OBJ_FILE)) 
-FUNC_OBJ =	$(addprefix $(OBJ_PATH), $(FUN_OBJ_FILE)) 
+re:	fclean all
 
-COREWAR_MAIN = ./src_vm/main.c
-
-#Compile
-CCFLAGS = -Wall -Werror -Wextra
-NCURSES = -lncurses
-CC = gcc $(CCFLAGS)
-
-LIBF = $(LIB_PATH)libft.a
-
-#Make Commands
-all: $(COREWAR) $(COREWAR_MAIN)
-
-$(COREWAR): $(OBJ) $(FUNC_OBJ) $(COREWAR_MAIN)
-	@make -C $(LIB_PATH)
-	@$(CC) $(NCURSES) -o $@ $(LIBF) $(OBJ) $(FUNC_OBJ) $(COREWAR_MAIN)
-	@echo "\x1b[32m"Finished making $@"\x1b[0m"
-
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	@mkdir -p $(OBJ_PATH)
-	@$(CC) -I$(INC_PATH) -o $@ -c $<
-	@echo Making "\x1b[35m"$@"\x1b[0m"
-
-$(OBJ_PATH)%.o: $(FUNC_PATH)%.c
-	@mkdir -p $(OBJ_PATH)
-	@$(CC) -I$(INC_PATH) -o $@ -c $<
-	@echo Making "\x1b[35m"$@"\x1b[0m"
-
-test: $(OBJ) $(TEST)
-	@make -C./libft/
-	@$(CC) -o $@ $(OBJ) $(FUNC_OBJ) $(TEST) $(LIBF)
-	@./test
-
-clean: 
-	@/bin/rm -rf $(OBJ) $(FUNC_OBJ)
-	@echo "\x1b[31m"Removed all $(COREWAR) objects"\x1b[0m"
-
-fclean: clean 
-	@rm -f $(COREWAR)
-	@echo "\x1b[31m"Removed $(COREWAR)"\x1b[0m"
-	
-cleanlib:
-	@make clean -C $(LIB_PATH)
-
-fcleanlib:
-	@make fclean -C $(LIB_PATH)
-	
-cleanall: fclean fcleanlib
-
-re : fclean all
-
-fre: cleanall all
-
-.PHONY: re fclean clean all test
+.PHONY:		all clean fclean re
